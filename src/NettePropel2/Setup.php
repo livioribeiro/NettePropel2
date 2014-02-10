@@ -27,7 +27,7 @@ class Setup extends Nette\Object {
         $parameters = $container->getParameters();
 
         if (!array_key_exists('propel', $parameters)) {
-            throw new Exception('Missing configuration for propel');
+            throw new \Exception('Missing configuration for propel');
         }
         self::$propel = $parameters['propel'];
 
