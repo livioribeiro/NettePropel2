@@ -3,7 +3,7 @@ NettePropel2
 
 Propel 2 integration with Nette Framework
 
-In bootstrap.php
+In bootstrap.php:
 
 ```php
   use NettePropel2;
@@ -13,15 +13,29 @@ In bootstrap.php
   NettePropel2\Setup::setup($container)
 ```
 
-In config.local.neon
+You can use both Neon or PHP to configure the database
 
-```yaml
-  parameters:
-    propel:
-        adapter: sqlite|pgsql|mysql|oracle|mssql
-        datasource: default # attribute "name" from <database> in schema.xml
-        host: host_name
-        dbname: db_name
-        user: user
-        password: password
+In propel.local.php:
+
+```php
+  $database = [
+      'default' => [
+          'adapter'     => 'sqlite|pgsql|mysql|oracle|mssql',
+          'host'        => 'host',
+          'dbname'      => 'dbname',
+          'user'        => 'user',
+          'password'    => 'password'
+      ]
+  ];
+```
+
+Or propel.local.neon:
+
+```
+  default:
+    adapter: sqlite|pgsql|mysql|oracle|mssql
+    host: host
+    dbname: dbname
+    user: user
+    password: password
 ```

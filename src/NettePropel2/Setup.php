@@ -2,11 +2,12 @@
 
 namespace NettePropel2;
 
-use Nette;
-use Nette\Diagnostics\Debugger;
+use Nette,
+    Nette\Diagnostics\Debugger,
+    Nette\Utils\Neon;
 use Monolog\Logger;
-use Propel\Runtime\Propel;
-use Propel\Runtime\Connection\ConnectionManagerSingle;
+use Propel\Runtime\Propel,
+    Propel\Runtime\Connection\ConnectionManagerSingle;
 Use NettePropel2\Diagnostics\PropelPanel;
 
 /**
@@ -14,23 +15,40 @@ Use NettePropel2\Diagnostics\PropelPanel;
  */
 class Setup extends Nette\Object {
 
-    private static $propel;
+    private static $db;
+    private static $datasource;
 
     private static function getParam($paramName) {
-        if (!array_key_exists($paramName, self::$propel)) {
+        if (!array_key_exists($paramName, self::$db)) {
             throw new \Exception("Missing \"$paramName\" in propel configuration");
         }
-        return self::$propel[$paramName];
+        return self::$db[$paramName];
     }
 
-    public static function setup(\Nette\DI\Container $container) {
-        $parameters = $container->getParameters();
-
-        if (!array_key_exists('propel', $parameters)) {
-            throw new \Exception('Missing configuration for propel');
+    private static function parseConfigFile(Nette\DI\Container $container) {
+        $appDir = $container->parameters['appDir'];
+        
+        if (is_file($filename = "$appDir/config/propel.local.php")) {
+            require $filename;
+        } elseif (is_file($filename = "$appDir/config/propel.local.neon")) {
+            $database = Neon::decode(file_get_contents($filename));
         }
-        self::$propel = $parameters['propel'];
+        
+        try {
+            $datasource = array_keys($database)[0];
+        } catch (\Exception $e) {
+            throw new \Exception('Wrong configuration for propel');
+        }
 
+        if (!is_array($database[$datasource])) {
+            throw new \Exception('Wrong configuration for propel');
+        }
+
+        self::$db = $database[$datasource];
+        self::$datasource = $datasource;
+    }
+    
+    private static function getConfig($container) {
         $adapter = self::getParam('adapter');
         $dbname = self::getParam('dbname');
 
@@ -47,23 +65,25 @@ class Setup extends Nette\Object {
                 'password' => $password
             ];
         }
-
-        if ($parameters['debugMode']) {
+        
+        if (Nette\Configurator::detectDebugMode()
+                || $container->parameters['debugMode']) {
+            
             $config['classname'] = 'NettePropel2\\Connection\\PanelConnectionWrapper';
         }
+        
+        return $config;
+    }
 
-        try {
-            $datasource = self::getParam('datasource');
-        } catch (Exception $e) {
-            $datasource = 'default';
-        }
-
+    public static function setup(\Nette\DI\Container $container) {
+        self::parseConfigFile($container);
+        
         $serviceContainer = Propel::getServiceContainer();
-        $serviceContainer->setAdapterClass($datasource, $adapter);
+        $serviceContainer->setAdapterClass(self::$datasource, self::$db['adapter']);
 
         $manager = new ConnectionManagerSingle();
-        $manager->setConfiguration($config);
-        $serviceContainer->setConnectionManager($datasource, $manager);
+        $manager->setConfiguration(self::getConfig($container));
+        $serviceContainer->setConnectionManager(self::$datasource, $manager);
 
         $panel = new PropelPanel();
 
