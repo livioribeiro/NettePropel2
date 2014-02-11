@@ -15,5 +15,10 @@
 	"nette/nette": "~2.1.0",
         "propel/propel": "2.0.*@dev",
         "monolog/monolog": ">= 1.6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NettePropel2\\": "src/NettePropel2"
+        }
     }
 }
