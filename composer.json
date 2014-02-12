@@ -20,5 +20,8 @@
         "psr-4": {
             "NettePropel2\\": "src/NettePropel2"
         }
-    }
+    },
+    "bin": [
+        "bin/npropel"
+    ]
 }

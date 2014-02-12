@@ -1,0 +1,40 @@
+#!/usr/bin/env php
+
+<?php
+
+require __DIR__ . '/../autoload.php';
+
+$appDir = __DIR__ . '/../../app';
+
+$modelDir = "$appDir/model";
+$schemaDir = "$appDir/schema";
+
+$connection = \NettePropel2\Setup::getConnectionForCli($appDir);
+
+if ($argc == 1) {
+    passthru(__DIR__.'/propel');
+    exit;
+}
+
+if ($argv[1] == 'model:build') {
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/model";
+}
+elseif ($argv[1] =='sql:build') {
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-sql";
+}
+elseif ($argv[1] =='sql:insert') {
+    $params = "--input-dir=$appDir/schema --connection='$connection'";
+}
+elseif ($argv[1] =='database:reverse') {
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-reversed-database --connection='$connection'";
+}
+elseif ($argv[1] =='migration:diff') {
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-migrations --connection='$connection'";
+}
+elseif (strpos($argv[1], 'migration:') || $argv[1] == 'migrate') {
+    $params = "--input-dir=$appDir/schema --connection='$connection'";
+}
+
+array_shift($argv);
+    
+passthru(__DIR__."/propel $params " . implode(' ', $argv));

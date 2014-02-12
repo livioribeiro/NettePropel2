@@ -25,9 +25,7 @@ class Setup extends Nette\Object {
         return self::$db[$paramName];
     }
 
-    private static function parseConfigFile(Nette\DI\Container $container) {
-        $appDir = $container->parameters['appDir'];
-        
+    private static function parseConfigFile($appDir) {
         if (is_file($filename = "$appDir/config/propel.local.php")) {
             require $filename;
         } elseif (is_file($filename = "$appDir/config/propel.local.neon")) {
@@ -48,7 +46,7 @@ class Setup extends Nette\Object {
         self::$datasource = $datasource;
     }
     
-    private static function getConfig($container) {
+    private static function getConfig($debugMode) {
         $adapter = self::getParam('adapter');
         $dbname = self::getParam('dbname');
 
@@ -60,23 +58,29 @@ class Setup extends Nette\Object {
             $password = self::getParam('password');
 
             $config = [
-                'dsn' => "$adapter: host=$host;dbname=$dbname;",
+                'dsn' => "$adapter:host=$host;dbname=$dbname",
                 'user' => $user,
                 'password' => $password
             ];
         }
         
-        if (Nette\Configurator::detectDebugMode()
-                || $container->parameters['debugMode']) {
-            
+        if ($debugMode || Nette\Configurator::detectDebugMode()) {
             $config['classname'] = 'NettePropel2\\Connection\\PanelConnectionWrapper';
         }
         
         return $config;
     }
+    
+    public static function getConnectionForCli($appDir) {
+        self::parseConfigFile($appDir);
+        
+        $config = self::getConfig(true);
+        
+        return self::$datasource . "=$config[dsn];user=$config[user];password=$config[password]";
+    }
 
     public static function setup(\Nette\DI\Container $container) {
-        self::parseConfigFile($container);
+        self::parseConfigFile($container->parameters['appDir']);
         
         $serviceContainer = Propel::getServiceContainer();
         $serviceContainer->setAdapterClass(self::$datasource, self::$db['adapter']);
