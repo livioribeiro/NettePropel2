@@ -45,7 +45,7 @@ elseif (in_array('down', $argv) || in_array('migration:down', $argv)
         || in_array('migrate', $argv) || in_array('migration:migrate', $argv)
         || in_array('status', $argv) || in_array('migration:status', $argv)
         || in_array('up', $argv) || in_array('migration:up', $argv)) {
-    $params = "--input-dir=$appDir/schema --connection='$connection'";
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-migrations --connection='$connection'";
 }
 
 array_shift($argv);
