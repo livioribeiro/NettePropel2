@@ -27,7 +27,7 @@ if (in_array('convert-conf', $argv) || in_array('config:convert-xml', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema";
 }
 elseif (in_array('build', $argv) || in_array('model:build', $argv)) {
-    $params = "--input-dir=$appDir/schema --output-dir=$appDir/model";
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/model --disable-namespace-auto-package";
 }
 elseif (in_array('sql', $argv) || in_array('sql:build', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-sql";
