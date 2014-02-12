@@ -2,9 +2,10 @@
 
 <?php
 
-require __DIR__ . '/../autoload.php';
+require __DIR__ . '/../../../autoload.php';
 
-$appDir = __DIR__ . '/../../app';
+$vendorBinDir = realpath(__DIR__ . '/../../../bin');
+$appDir = realpath(__DIR__ . '/../../../../app');
 
 $modelDir = "$appDir/model";
 $schemaDir = "$appDir/schema";
@@ -12,29 +13,37 @@ $schemaDir = "$appDir/schema";
 $connection = \NettePropel2\Setup::getConnectionForCli($appDir);
 
 if ($argc == 1) {
-    passthru(__DIR__.'/propel');
+    system("$vendorBinDir/propel");
     exit;
 }
 
-if ($argv[1] == 'model:build') {
+if ($argv[1] == 'help')
+
+if (in_array('convert-conf', $argv) || in_array('config:convert-xml', $argv)) {
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema";
+}
+elseif (in_array('build', $argv) || in_array('model:build', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/model";
 }
-elseif ($argv[1] =='sql:build') {
+elseif (in_array('sql', $argv) || in_array('sql:build', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-sql";
 }
-elseif ($argv[1] =='sql:insert') {
+elseif (in_array('insert', $argv) || in_array('sql:insert', $argv)) {
     $params = "--input-dir=$appDir/schema --connection='$connection'";
 }
-elseif ($argv[1] =='database:reverse') {
+elseif (in_array('reverse', $argv) || in_array('database:reverse', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-reversed-database --connection='$connection'";
 }
-elseif ($argv[1] =='migration:diff') {
+elseif (in_array('diff', $argv) || in_array('migration:diff', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-migrations --connection='$connection'";
 }
-elseif (strpos($argv[1], 'migration:') || $argv[1] == 'migrate') {
+elseif (in_array('down', $argv) || in_array('migration:down', $argv)
+        || in_array('migrate', $argv) || in_array('migration:migrate', $argv)
+        || in_array('status', $argv) || in_array('migration:status', $argv)
+        || in_array('up', $argv) || in_array('migration:up', $argv)) {
     $params = "--input-dir=$appDir/schema --connection='$connection'";
 }
 
 array_shift($argv);
     
-passthru(__DIR__."/propel $params " . implode(' ', $argv));
+system("$vendorBinDir/propel $params " . implode(' ', $argv));
