@@ -17,7 +17,11 @@ if ($argc == 1) {
     exit;
 }
 
-if ($argv[1] == 'help')
+if ($argv[1] == 'help' || $argv[1] == 'test:prepare') {
+    array_shift($argv);
+    system("$vendorBinDir/propel " . implode(' ', $argv));
+    exit;
+}
 
 if (in_array('convert-conf', $argv) || in_array('config:convert-xml', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema";
