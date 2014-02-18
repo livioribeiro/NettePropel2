@@ -30,22 +30,22 @@ elseif (in_array('build', $argv) || in_array('model:build', $argv)) {
     $params = "--input-dir=$appDir/schema --output-dir=$appDir/model --disable-namespace-auto-package";
 }
 elseif (in_array('sql', $argv) || in_array('sql:build', $argv)) {
-    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-sql";
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/sql";
 }
 elseif (in_array('insert', $argv) || in_array('sql:insert', $argv)) {
     $params = "--input-dir=$appDir/schema --connection='$connection'";
 }
 elseif (in_array('reverse', $argv) || in_array('database:reverse', $argv)) {
-    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-reversed-database --connection='$connection'";
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/reversed-database --connection='$connection'";
 }
 elseif (in_array('diff', $argv) || in_array('migration:diff', $argv)) {
-    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-migrations --connection='$connection'";
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/migrations --connection='$connection'";
 }
 elseif (in_array('down', $argv) || in_array('migration:down', $argv)
         || in_array('migrate', $argv) || in_array('migration:migrate', $argv)
         || in_array('status', $argv) || in_array('migration:status', $argv)
         || in_array('up', $argv) || in_array('migration:up', $argv)) {
-    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/generated-migrations --connection='$connection'";
+    $params = "--input-dir=$appDir/schema --output-dir=$appDir/schema/migrations --connection='$connection'";
 }
 
 array_shift($argv);
