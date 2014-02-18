@@ -2,6 +2,7 @@
     "name": "livioribeiro/nette-propel2",
     "type": "library",
     "description": "Propel 2 integration with Nette framework",
+    "homepage": "https://github.com/livioribeiro/NettePropel2",
     "keywords": ["database", "orm", "Propel2", "Nette"],
     "license": "BSD 3-Clause",
     "authors": [
