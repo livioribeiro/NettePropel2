@@ -4,7 +4,7 @@
     "description": "Propel 2 integration with Nette framework",
     "homepage": "https://github.com/livioribeiro/NettePropel2",
     "keywords": ["database", "orm", "Propel2", "Nette"],
-    "license": "BSD 3-Clause",
+    "license": "BSD-3-Clause",
     "authors": [
         {
             "name": "Livio Ribeiro",
@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">= 5.4.0",
-	"nette/nette": "~2.1.0",
+        "nette/nette": "~2.1.0",
         "propel/propel": "2.0.*@dev",
         "monolog/monolog": ">= 1.6.0"
     },

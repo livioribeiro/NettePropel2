@@ -5,7 +5,14 @@ Propel 2 integration with Nette Framework
 
 ### Configuration
 
-In bootstrap.php:
+Can be used as compiler extension:
+
+```php
+    extensions:
+        - NettePropel2\PropelExtension
+```
+
+or calling `setup()` in bootstrap.php:
 
 ```php
   use NettePropel2;
